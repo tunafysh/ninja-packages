@@ -70,3 +70,38 @@ def clean():
             good(f"Removed {d}")
         else:
             info(f"{d} does not exist, skipping")
+
+def write_file(path, text):
+    print(f"[WRITE] {os.path.basename(path)}")
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(text)
+
+def is_choco_package_installed(pkg_name):
+    try:
+        # Run `choco list --localonly --limit-output --exact <pkg>`
+        result = subprocess.run(
+            ["choco", "list", "--localonly", "--limit-output", "--exact", pkg_name],
+            capture_output=True,
+            text=True,
+            check=False
+        )
+    except FileNotFoundError:
+        # choco command not found
+        return False
+    
+    output = result.stdout.strip()
+    # If package is installed, choco outputs something like "pkg_name|version"
+    if output:
+        # Make sure it's the exact package entry
+        # e.g. output == "git.install|2.39.0" or similar
+        parts = output.split("|")
+        if parts[0].lower() == pkg_name.lower():
+            return True
+    
+    return False
+
+def strip_extension(fn: str, extensions=[".tar.gz", ".tar.bz2"]):
+    for ext in extensions:
+        if fn.endswith(ext):
+            return fn[:-len(ext)]
+    return fn

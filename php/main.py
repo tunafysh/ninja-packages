@@ -3,34 +3,39 @@ import platform
 import subprocess
 import sys
 from pathlib import Path
-
 from util import *
 
+# ---------------------------------------
+
+# Helpers
 
 # ---------------------------------------
-# Helpers
-# ---------------------------------------
+
 def project_paths():
     root = Path.cwd() / "php"
     return {"root": root, "build": root / "build", "artifact": root / "artifact"}
-
 
 def prepare_dirs(paths):
     for p in paths.values():
         p.mkdir(parents=True, exist_ok=True)
 
+def run_cmd(cmd, cwd=None):
+    info(f"Running: {cmd}")
+    subprocess.run(cmd, shell=True, check=True, cwd=cwd)
 
 # ---------------------------------------
-# Linux + macOS Builder
+
+# Linux / macOS Builder
+
 # ---------------------------------------
-def build_php_unix(system, paths, php_version, php_tarball, php_url):
+
+def build_php_unix(paths, php_version, php_tarball, php_url):
     info(f"Downloading PHP source: {php_url}")
-    os.chdir(paths["build"])
-
+    build_dir = paths["build"]
     download_file(php_url, php_tarball)
-    extract_tarball(php_tarball)
+    extract_tarball(build_dir / php_tarball, dest=build_dir)
 
-    php_src = paths["build"] / f"php-{php_version}"
+    php_src = build_dir / f"php-{php_version}"
 
     config_cmd = [
         "./configure",
@@ -45,80 +50,77 @@ def build_php_unix(system, paths, php_version, php_tarball, php_url):
     ]
 
     info("Configuring PHP...")
-    run(" ".join(config_cmd), cwd=str(php_src))
+    run_cmd(" ".join(config_cmd), cwd=php_src)
 
     info("Compiling...")
-    run(f"make -j{os.cpu_count()}", cwd=str(php_src))
+    run_cmd(f"make -j{os.cpu_count()}", cwd=php_src)
 
     info("Installing...")
-    run("make install", cwd=str(php_src))
+    run_cmd("make install", cwd=php_src)
 
     good(f"PHP installed at {paths['artifact']}")
 
-
 # ---------------------------------------
+
 # Windows Builder
+
 # ---------------------------------------
+
 def build_php_windows(paths, php_version, php_zip, php_url):
-    info("Preparing Windows PHP build")
-
-    # Windows uses ZIP instead of tar.gz
-    os.chdir(paths["build"])
-
+    info(f"Downloading PHP ZIP: {php_url}")
+    build_dir = paths["build"]
     download_file(php_url, php_zip)
-    extract_zip(php_zip)
+    extract_zip(build_dir / php_zip, dest=build_dir)
 
-    php_src = paths["build"] / f"php-{php_version}"
-
-    # Windows needs PHP SDK + configure.js
+    php_src = build_dir / f"php-{php_version}"
     configure_js = php_src / "configure.js"
+    
     if not configure_js.exists():
-        raise RuntimeError("configure.js not found. Use official PHP SDK!")
+        raise RuntimeError("configure.js not found. Please use official PHP SDK!")
 
-    info("Running Windows PHP configure.js")
-
-    run(
-        f"cscript //nologo configure.js "
-        f'--prefix="{paths["artifact"]}" '
-        f"--enable-snapshot-build ",
-        cwd=str(php_src),
+    info("Running Windows configure.js")
+    run_cmd(
+        f'cscript //nologo "{configure_js}" --prefix="{paths["artifact"]}" --enable-snapshot-build',
+        cwd=php_src
     )
 
     info("Compiling (nmake)...")
-    run("nmake", cwd=str(php_src))
-    run("nmake install", cwd=str(php_src))
+    run_cmd("nmake", cwd=php_src)
+    run_cmd("nmake install", cwd=php_src)
 
     good(f"PHP installed at {paths['artifact']}")
 
 
 # ---------------------------------------
+
 # Main dispatcher
+
 # ---------------------------------------
+
 def main():
     php_version = "8.4.14"
-    php_tarball = f"php-{php_version}.tar.gz"
-    php_zip = f"php-{php_version}.zip"
-    php_url = f"https://www.php.net/distributions/{php_tarball}"
-
     system = platform.system()
-    paths = project_paths()
 
+    paths = project_paths()
     prepare_dirs(paths)
-    info(f"Platform: {system}")
-    info(f"PHP version: {php_version}")
-    info(f"Artifact directory: {paths['artifact']}")
 
     if system in ("Linux", "Darwin"):
-        build_php_unix(system, paths, php_version, php_tarball, php_url)
+        php_tarball = f"php-{php_version}.tar.gz"
+        php_url = f"https://www.php.net/distributions/{php_tarball}"
+        build_php_unix(paths, php_version, php_tarball, php_url)
     elif system == "Windows":
+        php_zip = f"php-{php_version}.zip"
+        php_url = f"https://www.php.net/distributions/{php_zip}"
         build_php_windows(paths, php_version, php_zip, php_url)
     else:
         raise RuntimeError(f"Unsupported OS: {system}")
 
+# ---------------------------------------
+
+# Entry
 
 # ---------------------------------------
-# Entry
-# ---------------------------------------
+
 if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "clean":
         clean()
@@ -130,5 +132,5 @@ if __name__ == "__main__":
         err(f"Command failed: {e}")
         sys.exit(1)
     except Exception as e:
-        err(f"{e}")
+        err(str(e))
         sys.exit(1)
