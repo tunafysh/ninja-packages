@@ -2,54 +2,14 @@ import os
 import platform
 import subprocess
 import sys
-import shutil
-
-# ----------------------------
-# Colors
-# ----------------------------
-def c(text, color):
-    if sys.stdout.isatty():
-        return f"\033[{color}m{text}\033[0m"
-    return text
-
-
-def info(x): print(c(x, "36"))
-def good(x): print(c(x, "32"))
-def warn(x): print(c(x, "33"))
-def err(x):  print(c(x, "31"))
-
-
-# ----------------------------
-# Helpers
-# ----------------------------
-def run(cmd, cwd=None):
-    info(f"[RUN] {cmd} (cwd={cwd})")
-    subprocess.check_call(cmd, shell=True, cwd=cwd)
-
-
-# ----------------------------
-# CLEAN
-# ----------------------------
-def clean():
-    project_root = os.path.abspath(".")
-    build_dir = os.path.join(project_root, "build")
-    artifact_dir = os.path.join(project_root, "artifact")
-
-    for d in (build_dir, artifact_dir):
-        if os.path.exists(d):
-            warn(f"Removing {d}")
-            shutil.rmtree(d)
-            good(f"Removed {d}")
-        else:
-            info(f"{d} does not exist, skipping")
-
+from util import *
 
 # ----------------------------
 # Main
 # ----------------------------
 def main():
     system = platform.system()
-    project_root = os.path.abspath(".")
+    project_root = os.path.abspath(".").join("mariadb")
     build_dir = os.path.join(project_root, "build")
     mariadb_artifact_dir = os.path.join(project_root, "artifact")
     mariadb_repo_url = "https://github.com/MariaDB/server.git"
