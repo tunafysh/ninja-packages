@@ -1,0 +1,54 @@
+name: "Default Registry"
+description: "Main Ninja registry"
+shurikens:
+  - type: shuriken
+    name: "Apache"
+    version: "2.4.57"
+    description: "The Apache HTTP Server."
+    author: "me"
+    license: ""
+    platforms: ["linux", "windows", "macos"]
+    url: "https://example.com/apache-{{ os }}.shuriken"
+
+  - type: shuriken
+    name: "MySQL"
+    version: "2.4.57"
+    description: "rlly old Database server"
+    author: "me"
+    license: ""
+    platforms: ["linux", "windows", "macos"]
+    url: "https://example.com/mysql-{{ os }}.shuriken"
+
+  - type: shuriken
+    name: "PHP"
+    version: "2.4.57"
+    description: "the PHP interpreter for web dev."
+    author: "me"
+    license: ""
+    platforms: ["linux", "windows", "macos"]
+    url: "https://example.com/php-{{ os }}.shuriken"
+    
+  - type: shuriken
+    name: "PostgreSQL"
+    version: "2.4.57"
+    description: "Database server but better"
+    author: "me"
+    license: ""
+    platforms: ["linux", "windows", "macos"]
+    url: "https://example.com/postgres-{{ os }}.shuriken"
+
+  - type: bundle
+    name: "AMP Stack"
+    version: "1.0.0"
+    description: "Apache, MariaDB, PHP bundle"
+    author: "me"
+    license: ""
+    shurikens: ["Apache", "MariaDB", "PHP"]
+
+  - type: bundle
+    name: "APP Stack"
+    version: "1.0.0"
+    description: "Apache, MariaDB, PHP bundle"
+    author: "me"
+    license: ""
+    shurikens: ["Apache", "PostgreSQL", "PHP"]

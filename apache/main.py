@@ -37,7 +37,7 @@ def get_latest_apr():
 # ----------------------------
 def main():
     system = platform.system()
-    project_root = os.path.abspath(".").join("apache")
+    project_root = os.path.join(os.path.abspath("."), "apache")
     build_dir = os.path.join(project_root, "build")
     artifact_dir = os.path.join(project_root, "artifact")
 
@@ -80,14 +80,50 @@ def main():
 
     elif system == "Windows":
         info(f"Configuring Apache for Windows in {artifact_dir}")
+        
+        # Check for required tools
+        required_tools = {
+            "cmake": "Install CMake from https://cmake.org/download/",
+            "msbuild": "Install Visual Studio 2022 (Community Edition is free)",
+        }
+        if not verify_windows_build_env(required_tools):
+            raise RuntimeError("Missing required build tools for Windows")
+        
+        # Check for vcpkg (optional but recommended)
+        has_vcpkg = shutil.which("vcpkg") is not None
+        
         cmake_build_dir = os.path.join(build_dir, "cmake_build")
         os.makedirs(cmake_build_dir, exist_ok=True)
-        run(f'cmake ..\\httpd-{apache_latest} -G "Visual Studio 17 2022" -DCMAKE_INSTALL_PREFIX={artifact_dir}', cwd=cmake_build_dir)
-        run("cmake --build . --config Release --target INSTALL", cwd=cmake_build_dir)
+        httpd_src = os.path.join("..", f"httpd-{apache_latest}")
+        
+        cmake_args = [
+            f'cmake "{httpd_src}"',
+            '-G "Visual Studio 17 2022"',
+            '-A x64',
+            f'-DCMAKE_INSTALL_PREFIX="{artifact_dir}"',
+            '-DENABLE_SSL=ON',
+            '-DENABLE_MODULES=shared'
+        ]
+        
+        if has_vcpkg:
+            info("vcpkg detected - will use it for dependencies")
+            vcpkg_root = os.environ.get('VCPKG_ROOT')
+            if vcpkg_root:
+                vcpkg_toolchain = os.path.join(vcpkg_root, 'scripts', 'buildsystems', 'vcpkg.cmake')
+                if os.path.exists(vcpkg_toolchain):
+                    cmake_args.append(f'-DCMAKE_TOOLCHAIN_FILE="{vcpkg_toolchain}"')
+        else:
+            warn("vcpkg not found - you may need to manually provide OpenSSL and other dependencies")
+            warn("Consider installing vcpkg: https://github.com/microsoft/vcpkg")
+        
+        run(" ".join(cmake_args), cwd=cmake_build_dir)
+        run("cmake --build . --config Release", cwd=cmake_build_dir)
+        run("cmake --install . --config Release", cwd=cmake_build_dir)
         good(f"Apache installed locally at {artifact_dir}")
 
     else:
         raise RuntimeError(f"Unsupported OS: {system}")
+    shutil.copy2("scaffold/.ninja", "artifact")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,28 @@
+function start()
+    log.info("Starting services...")
+    log.info("Current working directory: " .. env.cwd())
+    if env.os == "windows" then
+        proc.spawn(".\\bin\\httpd.exe")
+        return
+    end
+    if fs.exists("../php") then
+        proc.spawn("/home/tunafysh/.ninja/shurikens/PHP/sbin/php-fpm -p /home/tunafysh/.ninja/shurikens/PHP")
+    end
+    local res = shell.exec("./bin/apachectl -k start", true)
+    print(res.stdout)
+
+end
+
+function stop()
+    log.info("Stopping services...")
+    if env.os == "windows" then
+        local pid = fs.read("logs\\httpd.pid")
+        log.info("HTTPD PID: " .. pid)
+        proc.kill_pid(pid)
+        return
+    end
+    shell.exec("./bin/apachectl -k stop", true)
+    if fs.exists("../php") then
+        proc.kill_name("php-fpm")
+    end
+end

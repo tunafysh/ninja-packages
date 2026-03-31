@@ -1,0 +1,21 @@
+function start()
+	if env.os == "windows" then
+		-- Start PostgreSQL on Windows in detached mode
+		proc.spawn(".\\bin\\postgres.exe")
+	else
+		-- Start PostgreSQL on Unix in detached mode
+		proc.spawn("./bin/postgres")
+	end
+	return
+end
+
+function stop()
+	if env.os == "windows" then
+		-- Stop PostgreSQL on Windows
+		proc.spawn(".\\bin\\pg_ctl.exe", "stop")
+	else
+		-- Stop PostgreSQL on Unix
+		proc.spawn("./bin/pg_ctl", "stop")
+	end
+	return
+end

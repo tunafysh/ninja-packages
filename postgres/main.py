@@ -153,6 +153,9 @@ def main():
     else:
         raise RuntimeError(f"Unsupported OS: {system}")
 
+    shutil.copy2("scaffold/.ninja", "artifact")
+    # install ninja and forge shuriken
+
 
 if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "clean":
@@ -161,6 +164,7 @@ if __name__ == "__main__":
 
     try:
         main()
+        
     except subprocess.CalledProcessError as e:
         err(f"Command failed: {e}")
         sys.exit(1)

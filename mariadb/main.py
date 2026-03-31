@@ -9,7 +9,7 @@ from util import *
 # ----------------------------
 def main():
     system = platform.system()
-    project_root = os.path.abspath(".").join("mariadb")
+    project_root = os.path.join(os.path.abspath("."), "mariadb")
     build_dir = os.path.join(project_root, "build")
     mariadb_artifact_dir = os.path.join(project_root, "artifact")
     mariadb_repo_url = "https://github.com/MariaDB/server.git"
@@ -34,22 +34,49 @@ def main():
     os.makedirs(cmake_build_dir, exist_ok=True)
 
     info("Configuring MariaDB with CMake")
-    cmake_cmd = (
-        f"cmake .. "
-        f"-DCMAKE_INSTALL_PREFIX={mariadb_artifact_dir} "
-        f"-DWITH_SSL=system "
-        f"-DWITH_ZLIB=system "
-        f"-DWITH_UNIT_TESTS=OFF "
-    )
-    run(cmake_cmd, cwd=cmake_build_dir)
+    
+    # Base CMake configuration
+    cmake_args = [
+        "cmake ..",
+        f"-DCMAKE_INSTALL_PREFIX={mariadb_artifact_dir}",
+        "-DWITH_SSL=system",
+        "-DWITH_ZLIB=system",
+        "-DWITH_UNIT_TESTS=OFF",
+    ]
+    
+    # Windows-specific configuration
+    if system == "Windows":
+        info("Configuring for Windows with Visual Studio")
+        cmake_args.extend([
+            '-G "Visual Studio 17 2022"',
+            '-A x64',
+            '-DCMAKE_BUILD_TYPE=Release'
+        ])
+        
+        # Check for required tools on Windows
+        required_tools = {
+            "cmake": "Install CMake from https://cmake.org/download/",
+            "msbuild": "Install Visual Studio 2022 (Community Edition is free)",
+        }
+        if not verify_windows_build_env(required_tools):
+            raise RuntimeError("Missing required build tools for Windows")
+    
+    run(" ".join(cmake_args), cwd=cmake_build_dir)
 
     info("Compiling MariaDB")
-    run(f"cmake --build . -- -j{os.cpu_count()}", cwd=cmake_build_dir)
+    if system == "Windows":
+        run("cmake --build . --config Release", cwd=cmake_build_dir)
+    else:
+        run(f"cmake --build . -- -j{os.cpu_count()}", cwd=cmake_build_dir)
 
     info("Installing MariaDB locally")
-    run("cmake --install .", cwd=cmake_build_dir)
+    if system == "Windows":
+        run("cmake --install . --config Release", cwd=cmake_build_dir)
+    else:
+        run("cmake --install .", cwd=cmake_build_dir)
 
     good(f"MariaDB installed locally at {mariadb_artifact_dir}")
+    shutil.copy2("scaffold/.ninja", "artifact")
 
 
 if __name__ == "__main__":

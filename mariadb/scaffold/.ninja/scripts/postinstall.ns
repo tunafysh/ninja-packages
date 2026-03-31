@@ -1,0 +1,5 @@
+if env.os == "windows" then
+    shell.exec(".\\bin\\mysql_install_db.exe")
+else
+    shell.exec("./bin/mysql_install_db")
+end

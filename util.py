@@ -105,3 +105,29 @@ def strip_extension(fn: str, extensions=[".tar.gz", ".tar.bz2"]):
         if fn.endswith(ext):
             return fn[:-len(ext)]
     return fn
+
+def check_windows_tool(tool_name, install_hint=None):
+    """Check if a Windows tool is available in PATH"""
+    if shutil.which(tool_name):
+        info(f"{tool_name} found: {shutil.which(tool_name)}")
+        return True
+    else:
+        err(f"{tool_name} not found in PATH!")
+        if install_hint:
+            warn(f"Install hint: {install_hint}")
+        return False
+
+def verify_windows_build_env(required_tools):
+    """Verify Windows build environment has required tools"""
+    missing = []
+    for tool, hint in required_tools.items():
+        if not check_windows_tool(tool, hint):
+            missing.append(tool)
+    
+    if missing:
+        err(f"Missing required tools: {', '.join(missing)}")
+        err("Please install the missing tools and ensure they are in your PATH.")
+        return False
+    
+    good("All required build tools found!")
+    return True

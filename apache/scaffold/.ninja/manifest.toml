@@ -1,0 +1,17 @@
+[shuriken]
+name = "Apache"
+id = "httpd"
+version = "2.4.59"
+type = "daemon"
+script-path = "manage.ns"
+
+[config]
+config-path = "conf/httpd.conf"
+
+[logs]
+log-path = "logs/httpd.log"
+
+[[tool]]
+name = "Install PHPMyAdmin"
+script= "scripts/install_pma.ns"
+description = "Installs PHPMyAdmin on the projects dir. Subject to change in the future"
