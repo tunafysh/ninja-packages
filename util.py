@@ -1,3 +1,4 @@
+import platform
 import shutil
 import sys
 import subprocess
@@ -26,10 +27,10 @@ def err(x):  print(c(x, "31"))
 # ----------------------------
 # Helpers
 # ----------------------------
-def run(cmd, cwd=None):
-    info(f"[RUN] {cmd} (cwd={cwd})")
-    subprocess.check_call(cmd, shell=True, cwd=cwd)
-    
+def run(cmd, cwd=None, env=None):
+    info(f"[RUN] {cmd} (cwd={cwd}) (env={env is not None})")
+    subprocess.check_call(cmd, shell=True, cwd=cwd, env=env)
+
 
 def download_file(url, dest):
     info(f"[DOWNLOAD] {url}")
@@ -131,3 +132,130 @@ def verify_windows_build_env(required_tools):
     
     good("All required build tools found!")
     return True
+
+def tool_exists(tool_name):
+    return shutil.which(tool_name) is not None
+
+def install_go():
+    if tool_exists("go"):
+        info("Go is already installed.")
+        return True
+    
+    
+import os
+from urllib.request import Request, urlopen
+
+def download_go(system, arch, version="1.21.0", out_dir="."):
+    ext = "zip" if system == "windows" else "tar.gz"
+
+    filename = f"go{version}.{system}-{arch}.{ext}"
+    filepath = os.path.join(out_dir, filename)
+    url = f"https://go.dev/dl/{filename}"
+
+    # Skip if already downloaded
+    if os.path.exists(filepath):
+        info(f"Using cached {filename}")
+        return filepath
+
+    info(f"⬇ Downloading {url}")
+
+    req = Request(url, headers={
+        "User-Agent": "Mozilla/5.0"  # avoids some weird blocking
+    })
+
+    try:
+        with urlopen(req) as response, open(filepath, "wb") as out_file:
+            total = response.length  # may be None
+            downloaded = 0
+            chunk_size = 8192
+
+            while True:
+                chunk = response.read(chunk_size)
+                if not chunk:
+                    break
+                out_file.write(chunk)
+                downloaded += len(chunk)
+
+                # Optional progress
+                if total:
+                    percent = downloaded * 100 // total
+                    print(f"\r {percent}% ", end="")
+
+        good("\nDownload complete")
+        return filepath
+
+    except Exception as e:
+        if os.path.exists(filepath):
+            os.remove(filepath)
+        raise RuntimeError(f"Download failed: {e}")
+
+def extract_go(filename, system):
+    import os
+import shutil
+import tarfile
+import zipfile
+from pathlib import Path
+
+def extract_go(archive_path, system, go_dir):
+    info("Extracting Go...")
+
+    archive_path = Path(archive_path)
+
+    # Temporary extraction dir
+    temp_dir = archive_path.parent / "_extract_tmp"
+
+    if temp_dir.exists():
+        shutil.rmtree(temp_dir)
+    temp_dir.mkdir(parents=True)
+
+    # Remove old Go install
+    if go_dir.exists():
+        shutil.rmtree(go_dir)
+
+    # Extract into temp dir
+    if archive_path.suffix == ".zip":
+        with zipfile.ZipFile(archive_path, 'r') as z:
+            z.extractall(temp_dir)
+    else:
+        with tarfile.open(archive_path, "r:gz") as t:
+            t.extractall(temp_dir)
+
+    # Move extracted "go" folder to your structure
+    extracted_go = temp_dir / "go"
+
+    if not extracted_go.exists():
+        raise Exception("Go archive structure unexpected (missing 'go/' folder)")
+
+    shutil.move(str(extracted_go), str(go_dir))
+
+    # Cleanup
+    shutil.rmtree(temp_dir)
+    archive_path.unlink()
+
+    good(f"Go installed at {go_dir}")
+
+def get_system_arch():
+    system = platform.system().lower()
+    arch = platform.machine().lower()
+
+    # Normalize OS names to match Go downloads
+    if system.startswith("win"):
+        system = "windows"
+    elif system.startswith("darwin"):
+        system = "darwin"
+    elif system.startswith("linux"):
+        system = "linux"
+    else:
+        raise Exception(f"Unsupported OS: {system}")
+
+    # Normalize architecture
+    if arch in ("x86_64", "amd64"):
+        arch = "amd64"
+    elif arch in ("aarch64", "arm64"):
+        arch = "arm64"
+    elif arch in ("i386", "i686"):
+        arch = "386"
+    else:
+        raise Exception(f"Unsupported architecture: {arch}")
+
+    return system, arch

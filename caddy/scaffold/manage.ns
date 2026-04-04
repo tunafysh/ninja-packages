@@ -1,0 +1,54 @@
+function start()
+    log.info("Starting Caddy. cwd: " .. env.cwd())
+    if fs.exists("../php") then
+        local temp = fs.read("Caddyfile")
+        temp = temp:gsub("# php_fastcgi localhost:9000", "php_fastcgi localhost:9000") -- just in case it was commented out before
+        fs.write("Caddyfile", temp)
+        log.info("Starting PHP FPM")
+
+        if env.os == "windows" then
+            log.info("Running on Windows")
+            proc.start("../php/php-cgi.exe")
+        else
+            log.info("Running on Unix-like OS")
+            local res = shell.exec("../php/sbin/php-fpm -p ../php")
+            log.info("PHP FPM stdout log:  " .. res.stdout .. ". PHP FPM exit code: " .. res.code .. ". PHP FPM stderr log: " .. res.stderr)
+        end
+    else
+        log.info("PHP directory not found")
+        local temp = fs.read("Caddyfile")
+        temp = temp:gsub("php_fastcgi localhost:9000", "# php_fastcgi localhost:9000")
+        fs.write("Caddyfile", temp)
+    end
+
+    log.info("Starting Caddy")
+
+    if env.os == "windows" then
+        log.info("Running on Windows")
+        proc.spawn("caddy.exe", "run --config Caddyfile")
+    else
+        log.info("Running caddy on Unix-like OS")
+        local res = shell.exec("./caddy run --config Caddyfile & echo $! > caddy.pid", true)
+        log.info(res.stdout)
+    end
+end
+
+function stop()
+    log.info("Stopping Caddy")
+
+    if env.os == "windows" then
+        proc.kill("php-cgi.exe")
+    else
+        log.info("Running on Unix-like OS")
+        local pid = fs.read("../php/run/php-fpm.pid")
+        proc.kill_pid(pid)
+    end
+
+    if env.os == "windows" then
+        proc.kill("caddy.exe")
+    else
+        local pid = fs.read("caddy.pid")
+        proc.kill_pid(pid)
+        fs.remove("caddy.pid")
+    end
+end

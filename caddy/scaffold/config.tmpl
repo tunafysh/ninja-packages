@@ -1,0 +1,18 @@
+:{{ port }}
+root * ./projects
+
+php_fastcgi localhost:9000
+
+handle_path /templates/* {
+    root * ./templates
+    file_server
+}
+
+file_server {
+    browse ./templates/listing.html
+}
+
+log {
+    output file ./logs/access.log
+    format console
+}

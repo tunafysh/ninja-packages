@@ -76,7 +76,7 @@ def main():
         run("cmake --install .", cwd=cmake_build_dir)
 
     good(f"MariaDB installed locally at {mariadb_artifact_dir}")
-    shutil.copy2("scaffold/.ninja", "artifact")
+    shutil.copy2("scaffold/*", "artifact/.ninja")
 
 
 if __name__ == "__main__":
