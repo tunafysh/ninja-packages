@@ -259,3 +259,45 @@ def get_system_arch():
         raise Exception(f"Unsupported architecture: {arch}")
 
     return system, arch
+
+def windows_dev_run(cmd, cwd=None, env=None):
+    # On Windows, we want to run commands in a way that shows output in real-time
+    # and also works well with PowerShell scripts.
+    cmd = f"powershell -Command \"& 'C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\Tools\\Launch-VsDevShell.ps1' && {cmd}\""
+    info(f"[RUN] {cmd} (cwd={cwd}) (env={env is not None})")
+    process = subprocess.Popen(cmd, shell=True, cwd=cwd, env=env)
+    process.wait()
+    if process.returncode != 0:
+        raise subprocess.CalledProcessError(process.returncode, cmd)
+    
+def install_chocolatey():
+    info("Installing Chocolatey...")
+    cmd = 'powershell -Command "Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString(\'https://chocolatey.org/install.ps1\'))"'
+    subprocess.check_call(cmd, shell=True)
+    good("Chocolatey installed successfully!")
+
+def install_strawberryperl():
+    if tool_exists("strawberryperl") or tool_exists("perl"):
+        info("Strawberry Perl is already installed.")
+        return True
+
+    if not tool_exists("choco"):
+        warn("Chocolatey not found. Installing Chocolatey first...")
+        install_chocolatey()
+    info("Installing Strawberry Perl via Chocolatey...")
+    run("choco install strawberryperl -y")
+    good("Strawberry Perl installed successfully!")
+
+def install_bison():
+    if not tool_exists("bison"):
+        info("Bison not found. Installing WinFlexBison...")
+        zip_url = "https://github.com/lexxmark/winflexbison/releases/download/v2.5.24/win_flex_bison-2.5.24.zip"
+        zip_path = "winflexbison.zip"
+        extract_path = "winflexbison"
+
+        download_file(zip_url, zip_path)
+        extract_zip(zip_path, extract_path)
+
+        # Add bin to PATH
+        os.environ["PATH"] += os.pathsep + os.path.abspath(os.path.join(extract_path, "bin"))
+        info(f"WinFlexBison installed at {extract_path}/bin")

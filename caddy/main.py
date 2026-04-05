@@ -42,11 +42,11 @@ def main():
     # Install xcaddy
     xcaddy_bin = xcaddy_path()
 
+    env = os.environ.copy()
+    env["GOBIN"] = str(BUILD_DIR)
+    env["PATH"] = f"{str(GO_DIR / 'bin')}{os.pathsep}{env['PATH']}"
     if not xcaddy_bin.exists():
         info("Installing xcaddy...")
-        env = os.environ.copy()
-        env["GOBIN"] = str(BUILD_DIR)
-
         run(f"{str(go_bin)} install github.com/caddyserver/xcaddy/cmd/xcaddy@latest", env=env)
     else:
         good("xcaddy already installed.")
@@ -54,13 +54,11 @@ def main():
     # Build Caddy
     caddy_bin = caddy_path()
 
-    plugins = [
-#        "github.com/caddyserver/transform-templates",
-    ]
+    plugins = []
 
     if not caddy_bin.exists():
         info("Building Caddy...")
-        run(f"{str(xcaddy_bin)} build {"--with" + ','.join(plugins) if len(plugins) > 0 else ''}--output {str(caddy_bin)}")
+        run(f"{str(xcaddy_bin)} build {"--with" + ','.join(plugins) if len(plugins) > 0 else ''}--output {str(caddy_bin)}", env=env)
     else:
         good("Caddy already built.")
 

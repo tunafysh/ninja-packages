@@ -23,9 +23,11 @@ function Build-Component {
 }
 
 try {
+    Write-Host "`n Starting Bulk builds.`n" -ForegroundColor Cyan
     Build-Component -Name "PHP" -Module "php.main"
-    Build-Component -Name "Apache" -Module "apache.main"
+    Build-Component -Name "Caddy" -Module "caddy.main"
     Build-Component -Name "MariaDB" -Module "mariadb.main"
+    Build-Component -Name "Postgres" -Module "postgres.main"
     
     Write-Host "`nAll builds completed successfully!" -ForegroundColor Green
 }

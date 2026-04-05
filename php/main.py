@@ -19,10 +19,6 @@ def prepare_dirs(paths):
     for p in paths.values():
         p.mkdir(parents=True, exist_ok=True)
 
-def run_cmd(cmd, cwd=None):
-    info(f"Running: {cmd}")
-    subprocess.run(cmd, shell=True, check=True, cwd=cwd)
-
 # ---------------------------------------
 
 # Linux / macOS Builder
@@ -50,13 +46,13 @@ def build_php_unix(paths, php_version, php_tarball, php_url):
     ]
 
     info("Configuring PHP...")
-    run_cmd(" ".join(config_cmd), cwd=php_src)
+    run(" ".join(config_cmd), cwd=php_src)
 
     info("Compiling...")
-    run_cmd(f"make -j{os.cpu_count()}", cwd=php_src)
+    run(f"make -j{os.cpu_count()}", cwd=php_src)
 
     info("Installing...")
-    run_cmd("make install", cwd=php_src)
+    run("make install", cwd=php_src)
 
     good(f"PHP installed at {paths['artifact']}")
 
@@ -67,47 +63,9 @@ def build_php_unix(paths, php_version, php_tarball, php_url):
 # ---------------------------------------
 
 def build_php_windows(paths, php_version, php_zip, php_url):
-    """
-    For Windows, we download the pre-built binaries from php.net
-    Building PHP from source on Windows requires the PHP SDK which is complex.
-    Using pre-built binaries is the recommended approach.
-    """
-    info(f"Downloading pre-built PHP for Windows: {php_url}")
-    build_dir = paths["build"]
-    artifact_dir = paths["artifact"]
-    
-    # PHP Windows binaries come as ZIP files
-    # URL format: https://windows.php.net/downloads/releases/php-{version}-Win32-vs16-x64.zip
-    # For newer versions, use: https://windows.php.net/downloads/releases/php-{version}-nts-Win32-vs16-x64.zip
-    
-    # Determine the correct Windows binary URL
-    # Non-thread-safe (NTS) is recommended for most use cases
-    windows_php_url = f"https://windows.php.net/downloads/releases/php-{php_version}-nts-Win32-vs16-x64.zip"
-    windows_php_zip = f"php-{php_version}-nts-Win32-vs16-x64.zip"
-    
-    info(f"Attempting to download from: {windows_php_url}")
-    
-    try:
-        download_file(windows_php_url, str(build_dir / windows_php_zip))
-    except Exception as e:
-        # Fallback to thread-safe version if NTS not available
-        warn(f"NTS version not found, trying thread-safe version: {e}")
-        windows_php_url = f"https://windows.php.net/downloads/releases/php-{php_version}-Win32-vs16-x64.zip"
-        windows_php_zip = f"php-{php_version}-Win32-vs16-x64.zip"
-        download_file(windows_php_url, str(build_dir / windows_php_zip))
-    
-    info(f"Extracting PHP to {artifact_dir}")
-    extract_zip(str(build_dir / windows_php_zip), dest=str(artifact_dir))
-    
-    # Copy php.ini-production to php.ini if it doesn't exist
-    php_ini_prod = artifact_dir / "php.ini-production"
-    php_ini = artifact_dir / "php.ini"
-    
-    if php_ini_prod.exists() and not php_ini.exists():
-        import shutil
-        shutil.copy(php_ini_prod, php_ini)
-        info("Created php.ini from php.ini-production")
-    
+    info("Installing PHP builder powershell module...")
+    run("powershell -Command ..\\windows_build.ps1", cwd=paths["build"])
+
     good(f"PHP installed at {paths['artifact']}")
     info(f"To use PHP, add {artifact_dir} to your PATH")
     info(f"You can customize php.ini at: {php_ini}")
@@ -120,7 +78,7 @@ def build_php_windows(paths, php_version, php_zip, php_url):
 # ---------------------------------------
 
 def main():
-    php_version = "8.4.14"
+    php_version = "8.5.4"
     system = platform.system()
 
     paths = project_paths()
@@ -137,7 +95,7 @@ def main():
     else:
         raise RuntimeError(f"Unsupported OS: {system}")
         
-    shutil.copy2("scaffold/.ninja", "artifact")
+    shutil.copy2(paths["root"] / "scaffold" / "*", paths["artifact"])
 
 # ---------------------------------------
 

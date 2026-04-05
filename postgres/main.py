@@ -91,12 +91,13 @@ def main():
             info("Winflexbison not found. Installing...")
             run("choco install winflexbison -y")
 
-        if not shutil.which("python"):
-            raise RuntimeError("Python is not installed")
+#   removed line because it seems paradoxical
+#        if not shutil.which("python"):
+#           raise RuntimeError("Python is not installed")
 
         if not shutil.which("msbuild"):
             raise RuntimeError(
-                "MSBuild not found – open 'x64 Native Tools Command Prompt for VS 2022'"
+                "MSBuild not found - open 'x64 Native Tools Command Prompt for VS 2022'"
             )
 
         #
