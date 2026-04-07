@@ -1,0 +1,29 @@
+function start()
+    if env.os == "windows" then
+        -- Start MariaDB in detached mode on Windows
+        proc.spawn(".\\bin\\mariadbd.exe --defaults-file=.\\my.ini --pid-file=.\\mariadb.pid")
+    else
+        -- Start MariaDB in detached mode on Unix/macOS
+        proc.spawn("bash mariactl start") -- dont ask im not in the mood to deal with unix bullshit.
+    end
+end
+
+function stop()
+    local shutdown_cmd
+    if env.os == "windows" then
+        shutdown_cmd = ".\\bin\\mariadb --defaults-file=.\\my.ini -u root -e \"SHUTDOWN;\""
+    else
+        shutdown_cmd = "./bin/mariadb --defaults-file=./my.ini -u root -e \"SHUTDOWN;\""
+    end
+
+    local res = shell.exec(shutdown_cmd)
+    if res.code ~= 0 then
+        log.warn("MariaDB shutdown failed, trying to kill the process manually...")
+        -- Fallback: kill by PID or name
+        if env.os == "windows" then
+            shell.exec("taskkill /IM mariadbd.exe /F")
+        else
+            proc.spawn("bash mariactl stop")
+        end
+    end
+end

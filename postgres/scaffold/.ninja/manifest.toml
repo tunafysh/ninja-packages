@@ -3,8 +3,4 @@ name = "Postgres"
 id = "pgsql"
 version = "18.1"
 type = "daemon"
-require-admin = false
-
-[shuriken.management]
-type = "script"
 script-path = "manage.ns"

@@ -25,12 +25,11 @@ function start()
 
     if env.os == "windows" then
         log.info("Running on Windows")
-        proc.spawn("caddy.exe", "run --config Caddyfile")
+        proc.spawn("caddy.exe run --config Caddyfile")
     else
         log.info("Running caddy on Unix-like OS")
-        local res = shell.exec("./caddy run --config Caddyfile & echo $! > caddy.pid", true)
-        log.info(res.stdout)
-    end
+        proc.spawn("./caddy start --config " .. env.cwd() .. "/Caddyfile --pidfile " .. env.cwd() .. "/caddy.pid")
+    end 
 end
 
 function stop()
@@ -40,15 +39,24 @@ function stop()
         proc.kill("php-cgi.exe")
     else
         log.info("Running on Unix-like OS")
-        local pid = fs.read("../php/run/php-fpm.pid")
-        proc.kill_pid(pid)
+        local pid = fs.read("../php/var/run/php-fpm.pid")
+
+        if pid then
+            pid = pid:match("%d+") -- extract clean number
+            if pid then
+                log.info("Killing PHP-FPM with PID:"..pid)
+                proc.kill_pid(pid)
+            else
+                log.warn("Invalid PID in php-fpm.pid")
+            end
+        else
+            log.warn("php-fpm.pid not found")
+        end
     end
 
     if env.os == "windows" then
-        proc.kill("caddy.exe")
+        proc.kill_name("caddy.exe")
     else
-        local pid = fs.read("caddy.pid")
-        proc.kill_pid(pid)
-        fs.remove("caddy.pid")
+        shell.exec("./caddy stop &")
     end
 end

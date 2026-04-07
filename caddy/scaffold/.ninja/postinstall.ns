@@ -1,0 +1,5 @@
+if env.os == "linux" then
+    shell.exec("setcap 'cap_net_bind_service=+ep' $(pwd)/caddy", true)
+end
+
+ninja.save_config("caddy")

@@ -3,4 +3,7 @@ name = "Caddy"
 id = "caddy"
 script-path = "manage.ns"
 type = "daemon"
-version = "2.11.2"
+version = "0.0.0"
+
+[config]
+config-path = "Caddyfile"

@@ -1,12 +1,14 @@
+import hashlib
+import os
 import platform
 import shutil
 import sys
 import subprocess
-import os
 import tarfile
 import urllib.request
 import zipfile
 
+from pathlib import Path
 from tqdm import tqdm
 
 # ----------------------------
@@ -31,20 +33,43 @@ def run(cmd, cwd=None, env=None):
     info(f"[RUN] {cmd} (cwd={cwd}) (env={env is not None})")
     subprocess.check_call(cmd, shell=True, cwd=cwd, env=env)
 
-
-def download_file(url, dest):
-    info(f"[DOWNLOAD] {url}")
+def _download(url, dest: Path):
+    dest = Path(dest)  # ensure it's a Path object
     with urllib.request.urlopen(url) as response:
         total_size = int(response.getheader('Content-Length', 0))
         block_size = 8192
-        with open(dest, 'wb') as f, tqdm(total=total_size, unit='B', unit_scale=True, unit_divisor=1024, desc=dest) as bar:
+        with open(dest, 'wb') as f, tqdm(
+            total=total_size, 
+            unit='B', 
+            unit_scale=True, 
+            unit_divisor=1024, 
+            desc=str(dest)  # <--- convert Path to string
+        ) as bar:
             while True:
                 buffer = response.read(block_size)
                 if not buffer:
                     break
                 f.write(buffer)
                 bar.update(len(buffer))
-    good(f"[SAVED] {dest}")
+
+def download_file(url, dest, checksum=None, retries=2):
+    info(f"[DOWNLOAD] {url}")
+
+    for attempt in range(1, retries + 1):
+        _download(url, dest)
+
+        if checksum is None:
+            break
+
+        info(f"[VERIFY] {dest}")
+        if sha256_checksum(dest) == checksum:
+            good(f"[SAVED] {dest}")
+            return
+        else:
+            info(f"[CHECKSUM MISMATCH] Attempt {attempt}/{retries}")
+
+    # If we reach here, all retries failed
+    raise ValueError(f"Checksum verification failed for {dest} after {retries} attempts")
 
 
 def extract_tarball(tarball_path, dest="."):
@@ -301,3 +326,10 @@ def install_bison():
         # Add bin to PATH
         os.environ["PATH"] += os.pathsep + os.path.abspath(os.path.join(extract_path, "bin"))
         info(f"WinFlexBison installed at {extract_path}/bin")
+
+def sha256_checksum(file_path):
+    sha256 = hashlib.sha256()
+    with open(file_path, "rb") as f:
+        for chunk in iter(lambda: f.read(8192), b""):
+            sha256.update(chunk)
+    return sha256.hexdigest()

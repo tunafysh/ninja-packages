@@ -1,26 +1,32 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Index of {{ .Request.Path }}</title>
+  <title>Index of {{html .Path}}</title>
   <style>
     body { font-family: sans-serif; background: #111; color: #eee; }
     a { color: #0af; text-decoration: none; }
     a:hover { text-decoration: underline; }
-    table { width: 100%; }
-    th, td { padding: 0.5em; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 0.5em; text-align: left; }
+    th { border-bottom: 1px solid #444; }
   </style>
 </head>
 <body>
-  <h1>Index of {{ .Request.Path }}</h1>
+  <h1>Index of {{html .Path}}</h1>
+  {{if .CanGoUp}}<p><a href="..">← Up one level</a></p>{{end}}
   <table>
-    <tr><th>Name</th><th>Size</th><th>Modified</th></tr>
-    {{ range .Entries }}
     <tr>
-      <td><a href="{{ .Name }}">{{ .Name }}</a></td>
-      <td>{{ .Size }}</td>
-      <td>{{ .ModTime }}</td>
+      <th>Name</th>
+      <th>Size</th>
+      <th>Modified</th>
     </tr>
-    {{ end }}
+    {{range .Items}}
+    <tr>
+      <td><a href="{{html .URL}}">{{html .Name}}</a></td>
+      <td>{{if .IsDir}}&mdash;{{else}}{{.HumanSize}}{{end}}</td>
+      <td>{{.HumanModTime "2006-01-02 15:04"}}</td>
+    </tr>
+    {{end}}
   </table>
 </body>
 </html>

@@ -1,6 +1,6 @@
 [shuriken]
 name = "MySQL"
 id = "mariadb"
-version = "12.1.2"
+version = "12.2.2"
 type = "daemon"
 script-path = "scripts/manage.ns"

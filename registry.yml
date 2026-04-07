@@ -2,9 +2,9 @@ name: "Default Registry"
 description: "Main Ninja registry"
 shurikens:
   - type: shuriken
-    name: "Apache"
+    name: "Caddy"
     version: "2.4.57"
-    description: "The Apache HTTP Server."
+    description: "The Caddy HTTP Server and reverse proxy and everything else."
     author: "me"
     license: ""
     platforms: ["linux", "windows", "macos"]
@@ -40,15 +40,15 @@ shurikens:
   - type: bundle
     name: "AMP Stack"
     version: "1.0.0"
-    description: "Apache, MariaDB, PHP bundle"
+    description: "Apache (now Caddy because apache gave me a lobotomy trying to work with it.), MariaDB, PHP bundle"
     author: "me"
     license: ""
-    shurikens: ["Apache", "MariaDB", "PHP"]
+    shurikens: ["Caddy", "MariaDB", "PHP"]
 
   - type: bundle
     name: "APP Stack"
     version: "1.0.0"
-    description: "Apache, MariaDB, PHP bundle"
+    description: "Apache (now Caddy because apache gave me a lobotomy trying to work with it.), MariaDB, PHP bundle"
     author: "me"
     license: ""
-    shurikens: ["Apache", "PostgreSQL", "PHP"]
+    shurikens: ["Caddy", "PostgreSQL", "PHP"]
