@@ -2,3 +2,9 @@
 **/artifact
 __pycache__
 init
+windows/Mariactl/.vs
+windows/Mariactl/Mariactl
+windows/Mariactl/x64
+windows/Mariactl/Release
+windows/Mariactl/Debug
+# Visual Studio just why.
