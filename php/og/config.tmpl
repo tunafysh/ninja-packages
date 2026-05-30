@@ -1,0 +1,113 @@
+[PHP]
+engine = On
+short_open_tag = Off
+precision = 14
+output_buffering = 4096
+zlib.output_compression = Off
+implicit_flush = Off
+serialize_precision = -1
+
+expose_php = On
+
+max_execution_time = 30
+max_input_time = 60
+memory_limit = {{ memory }}M
+
+error_reporting = E_ALL
+display_errors = On
+display_startup_errors = On
+log_errors = On
+error_log = "php_errors.log"
+
+variables_order = "GPCS"
+request_order = "GP"
+
+register_argc_argv = Off
+auto_globals_jit = On
+
+post_max_size = 32M
+upload_max_filesize = 32M
+file_uploads = On
+max_file_uploads = 20
+default_socket_timeout = 60
+
+;;;;;;;;;;;;;;;;;;;;;;;;;
+; Extension Loading     ;
+;;;;;;;;;;;;;;;;;;;;;;;;;
+
+extension_dir = ".\shurikens\PHP\ext"
+
+; --- MySQL / MySQLi / PDO MySQL ---
+extension=mysqli
+extension=pdo_mysql
+
+; --- PostgreSQL + PDO PGSQL ---
+extension=pgsql
+extension=pdo_pgsql
+
+; --- SQLite (needed by many frameworks/tools) ---
+extension=sqlite3
+extension=pdo_sqlite
+
+; --- Common Extensions ---
+extension=curl
+extension=gd
+extension=mbstring
+extension=openssl
+extension=xml
+extension=zip
+
+;;;;;;;;;;;;;;;;;;;;;;
+; Date               ;
+;;;;;;;;;;;;;;;;;;;;;;
+
+[Date]
+date.timezone = "UTC"
+
+;;;;;;;;;;;;;;;;;;;;;;
+; MySQLi             ;
+;;;;;;;;;;;;;;;;;;;;;;
+
+[MySQLi]
+mysqli.allow_persistent = On
+mysqli.max_persistent = -1
+mysqli.default_port = 3306
+
+;;;;;;;;;;;;;;;;;;;;;;
+; PDO MySQL          ;
+;;;;;;;;;;;;;;;;;;;;;;
+
+[Pdo_mysql]
+pdo_mysql.default_socket=""
+
+;;;;;;;;;;;;;;;;;;;;;;
+; PostgreSQL         ;
+;;;;;;;;;;;;;;;;;;;;;;
+
+[PostgreSQL]
+pgsql.allow_persistent = On
+pgsql.max_persistent = -1
+pgsql.max_links = -1
+
+;;;;;;;;;;;;;;;;;;;;;;
+; Sessions           ;
+;;;;;;;;;;;;;;;;;;;;;;
+
+[Session]
+session.save_handler = files
+session.save_path = "{{root}}\sessions"
+session.use_strict_mode = 1
+session.cookie_httponly = 1
+session.gc_probability = 1
+session.gc_divisor = 1000
+session.gc_maxlifetime = 1440
+
+;;;;;;;;;;;;;;;;;;;;;;
+; OPcache            ;
+;;;;;;;;;;;;;;;;;;;;;;
+
+[opcache]
+opcache.enable=1
+opcache.enable_cli=1
+opcache.memory_consumption=128
+opcache.max_accelerated_files=10000

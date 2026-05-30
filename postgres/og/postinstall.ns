@@ -1,0 +1,5 @@
+if env.os == "windows" then
+    shell.exec(".\\bin\\initdb.exe -D .\\data")
+else
+    shell.exec("./bin/initdb -D ./data")
+end

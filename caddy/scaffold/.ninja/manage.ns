@@ -12,7 +12,7 @@ function start()
         else
             log.info("Running on Unix-like OS")
             local res = shell.exec("../php/sbin/php-fpm -p ../php")
-            log.info("PHP FPM stdout log:  " .. res.stdout .. ". PHP FPM exit code: " .. res.code .. ". PHP FPM stderr log: " .. res.stderr)
+            log.info("PHP FPM exit code: " .. res.code)
         end
     else
         log.info("PHP directory not found")
@@ -57,6 +57,6 @@ function stop()
     if env.os == "windows" then
         proc.kill_name("caddy.exe")
     else
-        shell.exec("./caddy stop &")
+        proc.exec("./caddy stop &")
     end
 end

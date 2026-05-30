@@ -2,5 +2,7 @@
 name = "MySQL"
 id = "mariadb"
 version = "12.2.2"
+ports = [3306]
+check-ports = true
 type = "daemon"
 script-path = "scripts/manage.ns"

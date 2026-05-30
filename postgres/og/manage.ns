@@ -1,0 +1,19 @@
+function start()
+	if env.os == "windows" then
+		-- Start PostgreSQL on Windows in detached mode
+		proc.spawn(".\\bin\\pg_ctl.exe -D .\\data -l logfile start")
+	else
+		-- Start PostgreSQL on Unix in detached mode
+		shell.exec("./bin/pg_ctl -D ./data -l logfile start")
+	end
+end
+
+function stop()
+	if env.os == "windows" then
+		-- Stop PostgreSQL on Windows
+		proc.spawn(".\\bin\\pg_ctl.exe -D .\\data -l logfile.txt stop")
+	else
+		-- Stop PostgreSQL on Unix
+		shell.exec("./bin/pg_ctl -D ./data -l logfile stop")
+	end
+end

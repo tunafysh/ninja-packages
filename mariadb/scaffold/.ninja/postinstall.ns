@@ -5,5 +5,6 @@ if env.os == "windows" then
 else
     shell.exec("./scripts/mariadb-install-db --auth-root-authentication-method=normal --datadir=./data")
     proc.spawn("./bin/mariadbd --defaults-file=./my.ini")
+    time.sleep(1)
     shell.exec("./bin/mariadb -h 127.0.0.1 -P 3306 -u root < init.sql")
 end
