@@ -1,0 +1,8 @@
+[shuriken]
+name = "Postgres"
+id = "pgsql"
+version = "18.1"
+ports = [5432]
+check-ports = true
+type = "daemon"
+script-path = "manage.ns"

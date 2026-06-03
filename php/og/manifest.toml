@@ -1,0 +1,8 @@
+[shuriken]
+name = "PHP"
+id = "php"
+version = "8.5.0"
+type = "executable"
+
+[config]
+config-path="etc/php.ini"

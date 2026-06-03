@@ -2,8 +2,13 @@
 name = "Caddy"
 id = "caddy"
 script-path = "manage.ns"
+ports = [80, 443, 9000]
+check-ports = true
 type = "daemon"
 version = "2.11.2"
 
 [config]
 config-path = "Caddyfile"
+
+[logs]
+log-path = "logs/access.log"
