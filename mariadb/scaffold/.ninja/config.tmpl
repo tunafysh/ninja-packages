@@ -1,0 +1,12 @@
+[mysqld]
+basedir={{ path(root=root, path="", sep="/") }}
+datadir={{ path(root=root, path="/data", sep="/") }}
+port=3306
+bind-address=0.0.0.0
+port=3306
+skip-socket
+
+[client]
+host = 127.0.0.1
+port = 3306
+

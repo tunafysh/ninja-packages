@@ -35,7 +35,11 @@ default_socket_timeout = 60
 ; Extension Loading     ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 
-extension_dir = ".\shurikens\PHP\ext"
+{% if platform == "windows" %}
+extension_dir = {{ path(root=root, path="/ext", sep="\\") }}
+{% else %}
+extension_dir = {{ path(root=root, path="ext", sep="/") }}
+{% endif %}
 
 ; --- MySQL / MySQLi / PDO MySQL ---
 extension=mysqli
@@ -95,7 +99,11 @@ pgsql.max_links = -1
 
 [Session]
 session.save_handler = files
-session.save_path = "{{root}}\sessions"
+{% if platform == "windows" %}
+session.save_path = "{{ path(root=root, path="sessions", sep="\\") }}"
+{% else %}
+session.save_path = "{{ path(root=root, path="sessions", sep="/") }}"
+{% endif %}
 session.use_strict_mode = 1
 session.cookie_httponly = 1
 session.gc_probability = 1

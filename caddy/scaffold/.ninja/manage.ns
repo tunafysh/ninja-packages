@@ -8,7 +8,7 @@ function start()
 
         if env.os == "windows" then
             log.info("Running on Windows")
-            proc.start("../php/php-cgi.exe")
+            proc.spawn("..\\php\\php-cgi.exe -c ..\\php\\etc\\php.ini -b 9000")
         else
             log.info("Running on Unix-like OS")
             local res = shell.exec("../php/sbin/php-fpm -p ../php")
@@ -25,7 +25,7 @@ function start()
 
     if env.os == "windows" then
         log.info("Running on Windows")
-        proc.spawn("caddy.exe run --config Caddyfile")
+        proc.spawn(".\\caddy.exe run --config .\\Caddyfile --pidfile .\\caddy.pid")
     else
         log.info("Running caddy on Unix-like OS")
         proc.spawn("./caddy start --config " .. env.cwd() .. "/Caddyfile --pidfile " .. env.cwd() .. "/caddy.pid")
@@ -36,7 +36,8 @@ function stop()
     log.info("Stopping Caddy")
 
     if env.os == "windows" then
-        proc.kill("php-cgi.exe")
+        log.info("Running on Windows")
+        proc.spawn("taskkill /f /im php-cgi.exe") -- don't ask it works idk why.
     else
         log.info("Running on Unix-like OS")
         local pid = fs.read("../php/var/run/php-fpm.pid")
@@ -55,7 +56,7 @@ function stop()
     end
 
     if env.os == "windows" then
-        proc.kill_name("caddy.exe")
+        proc.spawn(".\\caddy.exe stop --config Caddyfile")
     else
         shell.exec("./caddy stop &")
     end

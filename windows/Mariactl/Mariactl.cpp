@@ -1,7 +1,8 @@
-#include <iostream>
-#include <windows.h>
 #include <filesystem>
+#include <iostream>
+#include <sstream>
 #include <vector>
+#include <windows.h>
 
 // idek what this is but i trust it
 constexpr unsigned long hash(const char* str) {
@@ -9,6 +10,55 @@ constexpr unsigned long hash(const char* str) {
 	while (*str)
 		h = ((h << 5) + h) + *str++;
 	return h;
+}
+
+std::string getExePath() {
+	char path[MAX_PATH];
+	GetModuleFileNameA(NULL, path, MAX_PATH);
+	return std::string(path);
+}
+
+std::string buildArgs(int argc, char* argv[]) {
+	std::ostringstream oss;
+	for (int i = 1; i < argc; i++) {
+		oss << "\"" << argv[i] << "\" ";
+	}
+	return oss.str();
+}
+
+void relaunchAsAdmin(int argc, char* argv[]) {
+	std::string exePath = getExePath();
+	std::string args = buildArgs(argc, argv);
+
+	ShellExecuteA(
+		NULL,
+		"runas",              // THIS triggers UAC
+		exePath.c_str(),
+		args.c_str(),
+		NULL,
+		SW_SHOWNORMAL
+	);
+}
+
+bool isAdmin() {
+	BOOL isAdmin = FALSE;
+	PSID adminGroup = NULL;
+
+	SID_IDENTIFIER_AUTHORITY NtAuthority = SECURITY_NT_AUTHORITY;
+
+	AllocateAndInitializeSid(
+		&NtAuthority,
+		2,
+		SECURITY_BUILTIN_DOMAIN_RID,
+		DOMAIN_ALIAS_RID_ADMINS,
+		0, 0, 0, 0, 0, 0,
+		&adminGroup
+	);
+
+	CheckTokenMembership(NULL, adminGroup, &isAdmin);
+	FreeSid(adminGroup);
+
+	return isAdmin;
 }
 
 bool isTerminalLaunch()
@@ -193,6 +243,11 @@ int main(int argc, char* argv[]) {
 		help();
 		return 0;
 	}
+
+	if (!isAdmin()) {
+		relaunchAsAdmin(argc, argv);
+	}
+
 
 	std::string command = argv[1];
 	SC_HANDLE mgr = OpenSCManagerA(NULL, NULL, SC_MANAGER_ALL_ACCESS);

@@ -1,7 +1,6 @@
 if env.os == "windows" then
-    shell.exec(".\\bin\\mariadb-install-db.exe --auth-root-authentication-method=normal --datadir=.\\data")
-    proc.spawn(".\\bin\\mariadbd.exe --defaults-file=.\\my.ini")
-    shell.exec(".\\bin\\mariadb.exe -h 127.0.0.1 -P 3306 -u root --execute=\"source ./init.sql;\"")
+    shell.exec(".\\bin\\mariadb-install-db.exe --datadir=.\\data")
+    shell.exec(".\\mariactl.exe install")
 else
     shell.exec("./scripts/mariadb-install-db --auth-root-authentication-method=normal --datadir=./data")
     proc.spawn("./bin/mariadbd --defaults-file=./my.ini")

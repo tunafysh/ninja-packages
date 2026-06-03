@@ -1,18 +1,25 @@
 :{{ port }}
-root * {{ ninja_root }}/projects
 
-php_fastcgi localhost:9000
+root * {{ path(root=ninja_root, path="projects", sep="/") }}
+
+@php {
+    path *.php
+}
+
+php_fastcgi @php localhost:{{ php_port }}
+
 
 handle_path /templates/* {
-	root * {{ root }}/templates
+	
+	root * {{ path(root=root, path="templates", sep="/") }}
 	file_server
 }
 
-file_server {
-	browse {{ root }}/templates/listing.html
+file_server { 
+	browse "{{ path(root=root, path="templates/index.html", sep="/") }}"
 }
 
 log {
-	output file {{ root }}/logs/access.log
+	output file {{ path(root=root, path="logs/access.log", sep="/") }}	
 	format console
 }
