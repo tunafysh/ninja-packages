@@ -4,11 +4,11 @@ shurikens:
   - type: shuriken
     name: "Caddy"
     version: "2.4.57"
-    description: "The Caddy HTTP Server and reverse proxy and everything else."
+    description: "The Caddy HTTP Server and reverse proxy and everything else. This is the replacement for apache dont ask why."
     author: "me"
     license: ""
     platforms: ["linux", "windows", "macos"]
-    url: "https://example.com/apache-{{ os }}.shuriken"
+    url: "https://github.com/tunafysh/ninja-packages/releases/latest/caddy-{{ os }}.shuriken"
 
   - type: shuriken
     name: "MySQL"
@@ -17,7 +17,7 @@ shurikens:
     author: "me"
     license: ""
     platforms: ["linux", "windows", "macos"]
-    url: "https://example.com/mysql-{{ os }}.shuriken"
+    url: "https://github.com/tunafysh/ninja-packages/releases/latest/mysql-{{ os }}.shuriken"
 
   - type: shuriken
     name: "PHP"
@@ -26,7 +26,7 @@ shurikens:
     author: "me"
     license: ""
     platforms: ["linux", "windows", "macos"]
-    url: "https://example.com/php-{{ os }}.shuriken"
+    url: "https://github.com/tunafysh/ninja-packages/releases/latest/php-{{ os }}.shuriken"
     
   - type: shuriken
     name: "PostgreSQL"
@@ -35,7 +35,7 @@ shurikens:
     author: "me"
     license: ""
     platforms: ["linux", "windows", "macos"]
-    url: "https://example.com/postgres-{{ os }}.shuriken"
+    url: "https://github.com/tunafysh/ninja-packages/releases/latest/postgres-{{ os }}.shuriken"
 
   - type: bundle
     name: "AMP Stack"
@@ -48,7 +48,7 @@ shurikens:
   - type: bundle
     name: "APP Stack"
     version: "1.0.0"
-    description: "Apache (now Caddy because apache gave me a lobotomy trying to work with it.), MariaDB, PHP bundle"
+    description: "Apache (now Caddy because apache gave me a lobotomy trying to work with it.), PostgreSQL, PHP bundle"
     author: "me"
     license: ""
     shurikens: ["Caddy", "PostgreSQL", "PHP"]
