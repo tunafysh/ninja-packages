@@ -1,3 +1,15 @@
 {
-    
+  "id": "mariadb",
+  "name": "MariaDB",
+  "version": "12.2.0",
+  "synopsis": "Popular open-source relational database optimized for simplicity and speed in web apps.",
+  "description": "MariaDB is one of the most common databases for web development. It’s straightforward, fast for typical workloads, and widely supported by hosting providers. It’s often used with PHP in traditional stacks (LAMP). Not as feature-heavy or strict as Postgres, but very practical and everywhere.",
+  "authors": [
+    "tunafysh (the shuriken binding)",
+    "MariaDB Foundation"
+  ],
+  "license": "GPL v2",
+  "repository": "https://github.com/mariadb/server",
+  "postinstall": "scripts/postinstall.ns",
+  "platform": "linux-x86_64"
 }

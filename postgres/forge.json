@@ -1,0 +1,15 @@
+{
+  "id": "postgres",
+  "name": "PostgresQL",
+  "version": "2.11.2",
+  "synopsis": "Advanced open-source relational database system with strong consistency and extensibility.",
+  "description": "PostgreSQL is a powerful SQL database known for being reliable, strict, and feature-rich. It supports complex queries, transactions, indexing tricks, JSON handling, and basically anything you’d expect from a serious production database. If MySQL is “easy and popular,” Postgres is “serious, correct, and slightly opinionated.",
+  "authors": [
+    "tunafysh (the shuriken binding)",
+    "PostgreSQL Global Development Group"
+  ],
+  "license": "Postgres License",
+  "repository": "https://github.com/postgres/postgres",
+  "postinstall": "scripts/postinstall.ns",
+  "platform": "linux-x86_64"
+}

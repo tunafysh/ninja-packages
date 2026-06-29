@@ -1,0 +1,16 @@
+{
+  "id": "caddy",
+  "name": "Caddy",
+  "version": "2.11.2",
+  "synopsis": "A minimal HTTP server.",
+  "description": "Ultra fast, extremely configurable, portable HTTP server written in go (Meant as a replacement for Apache.)",
+  "authors": [
+    "tunafysh (the shuriken binding)",
+    "The Caddy Server team",
+    "ZeroSSL"
+  ],
+  "license": "Apache 2.0",
+  "repository": "https://github.com/caddyserver/caddy",
+  "postinstall": "scripts/postinstall.ns",
+  "platform": "linux-x86_64"
+}

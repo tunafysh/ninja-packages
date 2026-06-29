@@ -1,11 +1,9 @@
 -- Set root password for both localhost and 127.0.0.1
 ALTER USER 'root'@'localhost'
-IDENTIFIED VIA mysql_native_password
-USING PASSWORD('root');
+IDENTIFIED BY 'root';
 
 ALTER USER 'root'@'127.0.0.1'
-IDENTIFIED VIA mysql_native_password
-USING PASSWORD('root');
+IDENTIFIED BY 'root';
 
 -- Reload privileges so changes take effect immediately
 FLUSH PRIVILEGES;

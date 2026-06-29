@@ -1,0 +1,15 @@
+{
+  "id": "php",
+  "name": "PHP",
+  "version": "8.5.0",
+  "synopsis": "Server-side scripting language for building dynamic web applications.",
+  "description": "PHP is a widely-used backend language that runs on the server and generates dynamic web pages. It plugs into HTML like glue, talks to databases easily, and powers a huge chunk of the web (yes, even the “old internet” and a lot of the modern one still). It’s simple to start with, but messy enough to scale into large systems if you’re disciplined… or brave.",
+  "authors": [
+    "tunafysh (the shuriken binding)",
+    "PHP Group"
+  ],
+  "license": "BSD 3 Clause license",
+  "repository": "https://github.com/php/php-src",
+  "postinstall": "scripts/postinstall.ns",
+  "platform": "linux-x86_64"
+}
