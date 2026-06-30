@@ -10,6 +10,6 @@
   ],
   "license": "GPL v2",
   "repository": "https://github.com/mariadb/server",
-  "postinstall": "scripts/postinstall.ns",
+  "postinstall": ".ninja/postinstall.ns",
   "platform": "linux-x86_64"
 }
