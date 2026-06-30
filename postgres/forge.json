@@ -10,6 +10,6 @@
   ],
   "license": "Postgres License",
   "repository": "https://github.com/postgres/postgres",
-  "postinstall": "scripts/postinstall.ns",
+  "postinstall": "postinstall.ns",
   "platform": "linux-x86_64"
 }
