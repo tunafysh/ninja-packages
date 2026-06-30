@@ -8,7 +8,7 @@ shurikens:
     author: "me"
     license: ""
     platforms: ["linux", "windows", "macos"]
-    url: "https://github.com/tunafysh/ninja-packages/releases/latest/caddy-{{ os }}-{{ arch }}.shuriken"
+    url: "https://github.com/tunafysh/ninja-packages/releases/download/v1.0.0/caddy-{{ os }}-{{ arch }}.shuriken"
 
   - type: shuriken
     name: "MySQL"
@@ -17,7 +17,7 @@ shurikens:
     author: "me"
     license: ""
     platforms: ["linux", "windows", "macos"]
-    url: "https://github.com/tunafysh/ninja-packages/releases/latest/mysql-{{ os }}-{{ arch }}.shuriken"
+    url: "https://github.com/tunafysh/ninja-packages/releases/download/v1.0.0/mysql-{{ os }}-{{ arch }}.shuriken"
 
   - type: shuriken
     name: "PHP"
@@ -26,7 +26,7 @@ shurikens:
     author: "me"
     license: ""
     platforms: ["linux", "windows", "macos"]
-    url: "https://github.com/tunafysh/ninja-packages/releases/latest/php-{{ os }}-{{ arch }}.shuriken"
+    url: "https://github.com/tunafysh/ninja-packages/releases/download/v1.0.0/php-{{ os }}-{{ arch }}.shuriken"
     
   - type: shuriken
     name: "PostgreSQL"
@@ -35,7 +35,7 @@ shurikens:
     author: "me"
     license: ""
     platforms: ["linux", "windows", "macos"]
-    url: "https://github.com/tunafysh/ninja-packages/releases/latest/postgres-{{ os }}-{{ arch }}.shuriken"
+    url: "https://github.com/tunafysh/ninja-packages/releases/download/v1.0.0/postgres-{{ os }}-{{ arch }}.shuriken"
 
   - type: bundle
     name: "AMP Stack"
