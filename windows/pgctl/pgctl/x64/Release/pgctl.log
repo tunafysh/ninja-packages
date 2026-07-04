@@ -1,0 +1,6 @@
+﻿  pgctl.cpp
+  Generating code
+  Previous IPDB not found, fall back to full compilation.
+  All 353 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  pgctl.vcxproj -> C:\Users\Hanan\Desktop\ninja-packages\windows\pgctl\x64\Release\pgctl.exe

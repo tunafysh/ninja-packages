@@ -158,7 +158,7 @@ int install() {
 
 	// IMPORTANT: mutable command line + quoted exe path
 	std::string cmdStr =
-		"\".\\bin\\pg_ctl.exe\" register -D .\\data -N PostgresQL";
+		"\".\\bin\\pg_ctl.exe\" register -D .\\data -N PostgresQL -S manual";
 
 	// CreateProcess requires mutable buffer
 	std::vector<char> cmdLine(cmdStr.begin(), cmdStr.end());
