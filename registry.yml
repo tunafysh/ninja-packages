@@ -6,36 +6,40 @@ shurikens:
     version: "2.4.57"
     description: "The Caddy HTTP Server and reverse proxy and everything else. This is the replacement for apache dont ask why."
     author: "me"
+    id: "caddy"
     license: ""
     platforms: ["linux", "windows", "macos"]
-    url: "https://github.com/tunafysh/ninja-packages/releases/download/v1.0.0/caddy-{{ os }}-{{ arch }}.shuriken"
+    source: "https://github.com/tunafysh/ninja-packages/releases/download/v1.0.0/caddy-{{ os }}-{{ arch }}.shuriken"
 
   - type: shuriken
-    name: "MySQL"
+    name: "MariaDB"
     version: "2.4.57"
     description: "rlly old Database server"
     author: "me"
+    id: "mariadb"
     license: ""
     platforms: ["linux", "windows", "macos"]
-    url: "https://github.com/tunafysh/ninja-packages/releases/download/v1.0.0/mysql-{{ os }}-{{ arch }}.shuriken"
+    source: "https://github.com/tunafysh/ninja-packages/releases/download/v1.0.0/mysql-{{ os }}-{{ arch }}.shuriken"
 
   - type: shuriken
     name: "PHP"
     version: "2.4.57"
     description: "the PHP interpreter for web dev."
     author: "me"
+    id: "php"
     license: ""
     platforms: ["linux", "windows", "macos"]
-    url: "https://github.com/tunafysh/ninja-packages/releases/download/v1.0.0/php-{{ os }}-{{ arch }}.shuriken"
+    source: "https://github.com/tunafysh/ninja-packages/releases/download/v1.0.0/php-{{ os }}-{{ arch }}.shuriken"
     
   - type: shuriken
     name: "PostgreSQL"
     version: "2.4.57"
     description: "Database server but better"
     author: "me"
+    id: "postgres"
     license: ""
     platforms: ["linux", "windows", "macos"]
-    url: "https://github.com/tunafysh/ninja-packages/releases/download/v1.0.0/postgres-{{ os }}-{{ arch }}.shuriken"
+    source: "https://github.com/tunafysh/ninja-packages/releases/download/v1.0.0/postgres-{{ os }}-{{ arch }}.shuriken"
 
   - type: bundle
     name: "AMP Stack"
