@@ -1,0 +1,15 @@
+{
+  "id": "pma",
+  "name": "PHPMyAdmin",
+  "version": "5.2.3",
+  "synopsis": "Bringing MySQL administration to the web.",
+  "description": "phpMyAdmin is a free software tool written in PHP, designed for administering MySQL and MariaDB over the web. It supports a wide range of operations (managing databases, tables, columns, relations, indexes, users, and more) through a user-friendly interface, while also allowing the execution of SQL commands directly. ",
+  "authors": [
+    "tunafysh (the shuriken binding)",
+    "PHP Group"
+  ],
+  "license": "BSD 3 Clause license",
+  "repository": "https://github.com/phpmyadmin/phpmyadmin",
+  "postinstall": ".ninja/postinstall.ns",
+  "platform": "linux-x86_64"
+}

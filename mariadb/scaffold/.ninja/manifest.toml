@@ -1,5 +1,5 @@
 [shuriken]
-name = "MySQL"
+name = "MariaDB"
 id = "mariadb"
 version = "12.2.2"
 ports = [3306]

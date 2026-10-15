@@ -1,0 +1,5 @@
+[shuriken]
+type = "executable"
+name = "PHPMyAdmin"
+id = "pma"
+version = "1.0.0"

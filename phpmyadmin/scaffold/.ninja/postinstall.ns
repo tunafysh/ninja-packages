@@ -1,0 +1,9 @@
+local target = "../../projects/pma"
+
+fs.create_dir(target)
+
+if env.os == "Windows" then
+    shell.exec("Copy-Item * ../../projects/pma")
+else
+    shell.exec("cp * ../../projects/pma")
+end
