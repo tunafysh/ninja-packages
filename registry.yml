@@ -5,7 +5,7 @@ shurikens:
     name: "Caddy"
     version: "2.4.57"
     description: "The Caddy HTTP Server and reverse proxy and everything else. This is the replacement for apache dont ask why."
-    author: "me"
+    author: "me (for the shuriken)"
     id: "caddy"
     license: ""
     platforms: ["linux", "windows", "macos"]
@@ -15,11 +15,21 @@ shurikens:
     name: "MariaDB"
     version: "2.4.57"
     description: "rlly old Database server"
-    author: "me"
+    author: "me (for the shuriken)"
     id: "mariadb"
     license: ""
     platforms: ["linux", "windows", "macos"]
     source: "https://github.com/tunafysh/ninja-packages/releases/download/v1.0.0/mariadb-{{ os }}-{{ arch }}.shuriken"
+
+  - type: shuriken
+    name: "PHPMyAdmin"
+    version: "5.2.3"
+    description: "Bringing MySQL administration to the web"
+    author: "me (for the shuriken)"
+    id: "caddy"
+    license: ""
+    platforms: ["linux", "windows", "macos"]
+    source: "https://github.com/tunafysh/ninja-packages/releases/download/v1.0.0/pma-{{ os }}-{{ arch }}.shuriken"
 
   - type: shuriken
     name: "PHP"
@@ -35,7 +45,7 @@ shurikens:
     name: "PostgreSQL"
     version: "2.4.57"
     description: "Database server but better"
-    author: "me"
+    author: "me (for the shuriken)"
     id: "postgres"
     license: ""
     platforms: ["linux", "windows", "macos"]
@@ -45,7 +55,7 @@ shurikens:
     name: "AMP Stack"
     version: "1.0.0"
     description: "Apache (now Caddy because apache gave me a lobotomy trying to work with it.), MariaDB, PHP bundle"
-    author: "me"
+    author: "me (for the bundle)"
     license: ""
     shurikens: ["Caddy", "MariaDB", "PHP"]
 
@@ -53,6 +63,6 @@ shurikens:
     name: "APP Stack"
     version: "1.0.0"
     description: "Apache (now Caddy because apache gave me a lobotomy trying to work with it.), PostgreSQL, PHP bundle"
-    author: "me"
+    author: "me (bundle)"
     license: ""
     shurikens: ["Caddy", "PostgreSQL", "PHP"]
